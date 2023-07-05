@@ -180,6 +180,12 @@ export interface Auth0ClientOptions extends BaseLoginOptions {
   useRefreshTokensFallback?: boolean;
 
   /**
+   * Override the URL to the /authorize endpoint.
+   * Defaults to https://{domain}/authorize
+   */
+  authorizeUrl?: string;
+
+  /**
    * A maximum number of seconds to wait before declaring background calls to /authorize as failed for timeout
    * Defaults to 60s.
    */

@@ -190,6 +190,31 @@ describe('Auth0Client', () => {
       );
     });
 
+    it('calls the authorize endpoint using the correct params when using an overridden authorizeUrl', async () => {
+      const auth0 = setup({
+        authorizeUrl: "https://login-domain/oauth/authorize"
+      });
+
+      jest.spyOn(<any>utils, 'runIframe').mockResolvedValue({
+        access_token: TEST_ACCESS_TOKEN,
+        state: TEST_STATE
+      });
+
+      await getTokenSilently(auth0);
+
+      const [[url]] = (<jest.Mock>utils.runIframe).mock.calls;
+
+      assertUrlEquals(
+        url,
+        'login-domain',
+        '/oauth/authorize',
+        {
+          redirect_uri: TEST_REDIRECT_URI
+        },
+        false
+      );
+    });
+
     it('calls the token endpoint with the correct params', async () => {
       const auth0 = setup({
         useFormData: false

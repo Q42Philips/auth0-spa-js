@@ -115,6 +115,7 @@ export class Auth0Client {
   private readonly transactionManager: TransactionManager;
   private readonly cacheManager: CacheManager;
   private readonly domainUrl: string;
+  private readonly authorizeUrl: string;
   private readonly tokenIssuer: string;
   private readonly scope: string;
   private readonly cookieStorage: ClientStorage;
@@ -222,6 +223,7 @@ export class Auth0Client {
     );
 
     this.domainUrl = getDomain(this.options.domain);
+    this.authorizeUrl = this.options.authorizeUrl || `${this.domainUrl}/authorize`;
     this.tokenIssuer = getTokenIssuer(this.options.issuer, this.domainUrl);
 
     // Don't use web workers unless using refresh tokens in memory
@@ -243,7 +245,10 @@ export class Auth0Client {
   }
 
   private _authorizeUrl(authorizeOptions: AuthorizeOptions) {
-    return this._url(`/authorize?${createQueryParams(authorizeOptions)}`);
+    const auth0Client = encodeURIComponent(
+      btoa(JSON.stringify(this.options.auth0Client || DEFAULT_AUTH0_CLIENT))
+    );
+    return `${this.authorizeUrl}?${createQueryParams(authorizeOptions)}&auth0Client=${auth0Client}`;
   }
 
   private async _verifyIdToken(

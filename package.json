@@ -89,12 +89,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/auth0/auth0-spa-js.git"
+    "url": "git://github.com/Q42Philips/auth0-spa-js.git"
   },
   "bugs": {
-    "url": "https://github.com/auth0/auth0-spa-js/issues"
+    "url": "https://github.com/Q42Philips/auth0-spa-js/pulls"
   },
-  "homepage": "https://github.com/auth0/auth0-spa-js#readme",
+  "homepage": "https://github.com/Q42Philips/auth0-spa-js#readme",
   "keywords": [
     "auth0",
     "login",

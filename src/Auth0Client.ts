@@ -115,7 +115,8 @@ export class Auth0Client {
   private readonly transactionManager: TransactionManager;
   private readonly cacheManager: CacheManager;
   private readonly domainUrl: string;
-  private readonly authorizeUrl: string;
+  private readonly auth0AuthorizeUrl: string;
+  private readonly customAuthorizeUrl?: string;
   private readonly tokenIssuer: string;
   private readonly scope: string;
   private readonly cookieStorage: ClientStorage;
@@ -223,7 +224,8 @@ export class Auth0Client {
     );
 
     this.domainUrl = getDomain(this.options.domain);
-    this.authorizeUrl = this.options.authorizeUrl || `${this.domainUrl}/authorize`;
+    this.auth0AuthorizeUrl = `${this.domainUrl}/authorize`;
+    this.customAuthorizeUrl = this.options.authorizeUrl;
     this.tokenIssuer = getTokenIssuer(this.options.issuer, this.domainUrl);
 
     // Don't use web workers unless using refresh tokens in memory
@@ -248,7 +250,9 @@ export class Auth0Client {
     const auth0Client = encodeURIComponent(
       btoa(JSON.stringify(this.options.auth0Client || DEFAULT_AUTH0_CLIENT))
     );
-    return `${this.authorizeUrl}?${createQueryParams(authorizeOptions)}&auth0Client=${auth0Client}`;
+    // Skip the custom authorizeUrl for silent re-auth
+    const url = (authorizeOptions.prompt !== "none" ? this.customAuthorizeUrl : undefined) ?? this.auth0AuthorizeUrl;
+    return `${url}?${createQueryParams(authorizeOptions)}&auth0Client=${auth0Client}`;
   }
 
   private async _verifyIdToken(
